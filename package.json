@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "date-format",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "@nuxt/ui": "3.3.0",
-    "nuxt": "^4.0.1",
+    "nuxt": "^4.0.2",
     "typescript": "^5.8.3",
-    "vue": "^3.5.17",
+    "vue": "^3.5.18",
     "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.11"
   }
 }
