@@ -3,5 +3,5 @@ compatibility_date = "2025-07-30"
 workers_dev = true
 
 [assets]
-directory = "./output/"
+directory = ".output/public/"
 not_found_handling = "404-page"
