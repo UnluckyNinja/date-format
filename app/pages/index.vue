@@ -86,7 +86,7 @@ const jsonExport = computed(()=>{
     <div class="my-20 text-center text-4xl">
       <NuxtTime :datetime :relative :locale v-bind="options" />
     </div>
-    <div class="flex flex-row items-stretch justify-center overflow-y-scroll gap-4">
+    <div class="flex flex-row items-stretch justify-center overflow-y-auto gap-4">
       <div class="flex flex-col gap-4">
         <UModal>
           <UButton class="self-start" color="secondary">Export to JSON</UButton>
