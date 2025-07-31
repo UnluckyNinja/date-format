@@ -72,6 +72,13 @@ const possibleValues = computed(()=>{
   const loc = new Intl.Locale(inputLocale.value)
   return [...new Set([loc.baseName, loc.maximize().baseName, ...navigator.languages])]
 })
+
+const jsonExport = computed(()=>{
+  return JSON.stringify({
+    locale: locale.value,
+    ...options,
+  },null, 2)
+})
 </script>
 
 <template>
@@ -79,8 +86,14 @@ const possibleValues = computed(()=>{
     <div class="my-20 text-center text-4xl">
       <NuxtTime :datetime :relative :locale v-bind="options" />
     </div>
-    <div class="flex flex-row items-start justify-evenly overflow-y-scroll gap-4">
-      <div class="flex flex-col gap-4 text-left">
+    <div class="flex flex-row items-stretch justify-center overflow-y-scroll gap-4">
+      <div class="flex flex-col gap-4">
+        <UModal>
+          <UButton class="self-start" color="secondary">Export to JSON</UButton>
+          <template #content>
+            <UTextarea class="m-4" :rows="12" v-model="jsonExport" variant="soft" readonly/>
+          </template>
+        </UModal>
         <UFormField label="Locale">
           <UInputMenu class=""
             v-model="locale"
@@ -100,18 +113,25 @@ const possibleValues = computed(()=>{
         <UFormField label="Time Zone">
           <UInputMenu class="w-full" v-model="options.timeZone" :items="TIME_ZONES"/>
         </UFormField>
-        <URadioGroup v-model="options.timeZoneName" legend="Time Zone Name" :items="[null, 'long', 'short', 'shortOffset', 'longOffset', 'shortGeneric', 'longGeneric']" />
+        <URadioGroup v-model="options.timeZoneName" legend="Time Zone Name" :items="[{ label: 'undefined', class: 'text-purple-500 babab', value: undefined }, 'long', 'short', 'shortOffset', 'longOffset', 'shortGeneric', 'longGeneric']" />
       </div>
-      <URadioGroup v-model="options.hourCycle" legend="Hour Cycle" :items="['h11','h12','h23','h24']" />
-      <URadioGroup v-model="options.era" legend="Era" :items="[null, 'long','short','narrow']" />
-      <URadioGroup v-model="options.year" legend="Year" :items="[null, 'numeric','2-digit']" />
-      <URadioGroup v-model="options.month" legend="Month" :items="[null, 'long', 'short', 'narrow', 'numeric','2-digit']" />
-      <URadioGroup v-model="options.day" legend="Day" :items="[null, 'numeric','2-digit']" />
-      <URadioGroup v-model="options.weekday" legend="Weekday" :items="[null, 'long','short','narrow']" />
-      <URadioGroup v-model="options.dayPeriod" legend="Day Period" :items="[null, 'long', 'short', 'narrow']" />
-      <URadioGroup v-model="options.hour" legend="Hour" :items="[null, 'numeric','2-digit']" />
-      <URadioGroup v-model="options.minute" legend="Minute" :items="[null, 'numeric','2-digit']" />
-      <URadioGroup v-model="options.second" legend="Second" :items="[null, 'numeric','2-digit']" />    </div>
+      <div class="mx-8 flex flex-col justify-around gap-4">
+        <div class="flex gap-8">
+          <URadioGroup v-model="options.era" legend="Era" :items="[{ label: 'undefined', ui: {label: 'text-purple-500'}, value: undefined }, 'long','short','narrow']" />
+          <URadioGroup v-model="options.year" legend="Year" :items="[{ label: 'undefined', ui: {label: 'text-purple-500'}, value: undefined }, 'numeric','2-digit']" />
+          <URadioGroup v-model="options.month" legend="Month" :items="[{ label: 'undefined', ui: {label: 'text-purple-500'}, value: undefined }, 'long', 'short', 'narrow', 'numeric','2-digit']" />
+          <URadioGroup v-model="options.day" legend="Day" :items="[{ label: 'undefined', ui: {label: 'text-purple-500'}, value: undefined }, 'numeric','2-digit']" />
+          <URadioGroup v-model="options.weekday" legend="Weekday" :items="[{ label: 'undefined', ui: {label: 'text-purple-500'}, value: undefined }, 'long','short','narrow']" />
+        </div>
+        <div class="flex gap-8">
+          <URadioGroup v-model="options.hourCycle" legend="Hour Cycle" :items="['h11','h12','h23','h24']" />
+          <URadioGroup v-model="options.dayPeriod" legend="Day Period" :items="[{ label: 'undefined', ui: {label: 'text-purple-500'}, value: undefined }, 'long', 'short', 'narrow']" />
+          <URadioGroup v-model="options.hour" legend="Hour" :items="[{ label: 'undefined', ui: {label: 'text-purple-500'}, value: undefined }, 'numeric','2-digit']" />
+          <URadioGroup v-model="options.minute" legend="Minute" :items="[{ label: 'undefined', ui: {label: 'text-purple-500'}, value: undefined }, 'numeric','2-digit']" />
+          <URadioGroup v-model="options.second" legend="Second" :items="[{ label: 'undefined', ui: {label: 'text-purple-500'}, value: undefined }, 'numeric','2-digit']" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
