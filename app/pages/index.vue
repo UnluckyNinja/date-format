@@ -45,8 +45,16 @@ onMounted(()=>{
 
 const NUMBER_ITEMS = ['native', 'traditio', 'finance'].concat(Intl.supportedValuesOf('numberingSystem'))
 const TIME_ZONES = Intl.supportedValuesOf('timeZone')
+
 const inputLocale = ref('')
 const localeInputFocus = ref(false)
+const isInputLocaleValid = ref(false)
+
+function isLocaleValid(locale: Intl.Locale) {
+  return locale.maximize().region !== undefined
+}
+
+// only update actual locale value when input is valid, otherwise ignore.
 function updateInputLocaleCode(value: string){
   if (!value) return
   try {
@@ -61,10 +69,6 @@ function updateInputLocaleCode(value: string){
   }
 }
 
-function isLocaleValid(locale: Intl.Locale) {
-  return locale.maximize().region !== undefined
-}
-const isInputLocaleValid = ref(false)
 const possibleValues = computed(()=>{
   if(!isInputLocaleValid.value) {
     return [locale.value, ...navigator.languages]
@@ -86,14 +90,34 @@ const jsonExport = computed(()=>{
     <div class="my-20 text-center text-4xl">
       <NuxtTime :datetime :relative :locale v-bind="options" />
     </div>
+    <div class="my-4 text-center text-2xl text-red-400 md:hidden">
+      Please open in desktop (mode) for best experience.
+    </div>
     <div class="flex flex-row items-stretch justify-center overflow-y-auto gap-4">
       <div class="flex flex-col gap-4">
-        <UModal>
-          <UButton class="self-start" color="secondary">Export to JSON</UButton>
-          <template #content>
-            <UTextarea class="m-4" :rows="12" v-model="jsonExport" variant="soft" readonly/>
-          </template>
-        </UModal>
+        <div class="flex flex-row justify-between">
+          <UModal title="JSON export">
+            <UButton class="self-start" color="secondary">Export to JSON</UButton>
+            <template #body>
+              <UTextarea class="w-full" :rows="12" v-model="jsonExport" variant="soft" readonly/>
+            </template>
+          </UModal>
+          <UModal title="About">
+            <UButton class="self-start" variant="link" color="neutral" icon="i-lucide:circle-help">About</UButton>
+            <template #body>
+              <p>
+                This website is a tool that helps you configure options of `DateTimeFomat`. 
+                A detailed explanation of each option is available on 
+                <ULink to="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat" target="_blank" active>MDN</ULink>.
+              </p>
+              <br>
+              <p>
+                The website is built with <ULink to="https://nuxt.com/" active>Nuxt</ULink> and <ULink to="https://ui.nuxt.com/" active>Nuxt UI</ULink>, 
+                you can find its source code <ULink to="https://github.com/UnluckyNinja/date-format" active>here</ULink>.
+              </p>
+            </template>
+          </UModal>
+        </div>
         <UFormField label="Locale">
           <UInputMenu class=""
             v-model="locale"
@@ -113,7 +137,7 @@ const jsonExport = computed(()=>{
         <UFormField label="Time Zone">
           <UInputMenu class="w-full" v-model="options.timeZone" :items="TIME_ZONES"/>
         </UFormField>
-        <URadioGroup v-model="options.timeZoneName" legend="Time Zone Name" :items="[{ label: 'undefined', class: 'text-purple-500 babab', value: undefined }, 'long', 'short', 'shortOffset', 'longOffset', 'shortGeneric', 'longGeneric']" />
+        <URadioGroup v-model="options.timeZoneName" legend="Time Zone Name" :items="[{ label: 'undefined', ui: {label: 'text-purple-500'}, value: undefined }, 'long', 'short', 'shortOffset', 'longOffset', 'shortGeneric', 'longGeneric']" />
       </div>
       <div class="mx-8 flex flex-col justify-around gap-4">
         <div class="flex gap-8">
